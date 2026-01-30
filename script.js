@@ -1,16 +1,77 @@
 const addButton = document.querySelector('.add');
 const inputTask = document.getElementById('input-task');
 const containerTodo = document.getElementById('container-todo');
-// Seleciona as colunas e tsks iniciais
 const columns = document.querySelectorAll('.column');
-const initialTasks = document.querySelectorAll('.task');
-// Seleção do modal de edição
 const modal = document.getElementById('modal-edit');
 const modalInput = document.getElementById('modal-input');
 const modalSaveBtn = document.getElementById('modal-save');
 const modalCancelBtn = document.getElementById('modal-cancel');
 
 let draggedTask = null;
+let currentTaskTextElement = null;
+
+function saveTasks() {
+    const tasksData = {
+        todo: [],
+        doing: [],
+        done: []
+    };
+
+    const containers = {
+        todo: document.getElementById('container-todo'),
+        doing: document.getElementById('container-doing'),
+        done: document.getElementById('container-done')
+    };
+
+    // Percorre cada coluna e salva o texto das tarefas
+    Object.keys(containers).forEach(key => {
+        const container = containers[key];
+        const tasks = container.querySelectorAll('.task');
+        
+        tasks.forEach(task => {
+            const textSpan = task.querySelector('span');
+            if (textSpan) {
+                tasksData[key].push(textSpan.textContent);
+            }
+        });
+    });
+
+    localStorage.setItem('myKanbanTasks', JSON.stringify(tasksData));
+}
+
+function loadTasks() {
+    const savedData = localStorage.getItem('myKanbanTasks');
+
+    if (savedData) {
+        try {
+            const tasksData = JSON.parse(savedData);
+            
+            const containers = {
+                todo: document.getElementById('container-todo'),
+                doing: document.getElementById('container-doing'),
+                done: document.getElementById('container-done')
+            };
+
+            // Recria as tarefas
+            Object.keys(tasksData).forEach(key => {
+                const taskList = tasksData[key];
+                const container = containers[key];
+
+                container.innerHTML = ''; 
+
+                if (Array.isArray(taskList)) {
+                    taskList.forEach(taskText => {
+                        const newTaskElement = createTaskElement(taskText);
+                        container.appendChild(newTaskElement);
+                    });
+                }
+            });
+        } catch (error) {
+            console.error("Erro ao carregar tarefas:", error);
+            localStorage.removeItem('myKanbanTasks');
+        }
+    }
+}
 
 function openModal(textElement) {
     currentTaskTextElement = textElement;
@@ -27,17 +88,28 @@ function closeModal() {
 modalCancelBtn.addEventListener('click', closeModal);
 
 modalSaveBtn.addEventListener('click', function() {
-    if (modalInput.value.trim() !== "") {
+    if (modalInput.value.trim() !== "" && currentTaskTextElement) {
         currentTaskTextElement.textContent = modalInput.value.trim();
+        saveTasks();
         closeModal();
     }
 });
 
 modalInput.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        modalSaveBtn.click();
-    }
+    if (e.key === 'Enter') modalSaveBtn.click();
 });
+
+function attachDragEvents(taskElement) {
+    taskElement.addEventListener('dragstart', function() {
+        draggedTask = this;
+        this.classList.add('dragging');
+    });
+
+    taskElement.addEventListener('dragend', function() {
+        draggedTask = null;
+        this.classList.remove('dragging');
+    });
+}
 
 function createTaskElement(content) {
     const task = document.createElement('div');
@@ -58,14 +130,10 @@ function createTaskElement(content) {
     deleteBtn.className = 'btn-delete';
     deleteBtn.innerHTML = '<i class="ph ph-trash"></i>';
 
-    actionsDiv.appendChild(editBtn);
-    actionsDiv.appendChild(deleteBtn);
-    task.appendChild(textSpan);
-    task.appendChild(actionsDiv);
-
     deleteBtn.addEventListener('click', function(e) {
-        e.stopPropagation(); // Impede que o clique ative o "arrastar"
+        e.stopPropagation();
         task.remove();
+        saveTasks(); 
     });
 
     editBtn.addEventListener('click', function(e) {
@@ -73,67 +141,57 @@ function createTaskElement(content) {
         openModal(textSpan);
     });
 
+    actionsDiv.appendChild(editBtn);
+    actionsDiv.appendChild(deleteBtn);
+    task.appendChild(textSpan);
+    task.appendChild(actionsDiv);
+
     attachDragEvents(task); 
+
     return task;
 }
 
-// função para eventos de drag arrastar e soltar
-function attachDragEvents(taskElement) {
-    taskElement.addEventListener('dragstart', function() {
-        draggedTask = this;
-        this.classList.add('dragging');
-    });
-
-    taskElement.addEventListener('dragend', function() {
-        draggedTask = null;
-        this.classList.remove('dragging');
-    });
-}
-
-//função para adicionar novas tarefas
 function addTask() {
-    if (inputTask.value.trim() === '') return;
+    const text = inputTask.value.trim();
+    if (text === '') return;
 
-    // Chama a função nova que cria tudo estruturado
-    const newTask = createTaskElement(inputTask.value.trim());
-    
+    const newTask = createTaskElement(text);
     containerTodo.appendChild(newTask);
+    
+    saveTasks();
     
     inputTask.value = '';
     inputTask.focus();
 }
 
-// adiciona eventos para as tasks que ja foram criadas no html
-initialTasks.forEach(task => attachDragEvents(task));
-
-// adiciona evento ao botão de adicionar tarefa
+// Adiciona evento ao botão de adicionar
 addButton.addEventListener('click', addTask);
 
-// adiciona suporte à tecla ENTER
+//tecla ENTER no input principal
 inputTask.addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        addTask();
-    }
+    if (e.key === 'Enter') addTask();
 });
 
-// Lógica das colunas
+// Lógica das Colunas
 columns.forEach(column => {
-    // Quando arrastar por cima
     column.addEventListener('dragover', function(e) {
         e.preventDefault();
-        this.classList.add('drag-over'); // Adiciona classe CSS em vez de mudar estilo direto
+        this.classList.add('drag-over');
     });
 
-    // Quando sair de cima
     column.addEventListener('dragleave', function() {
         this.classList.remove('drag-over');
     });
 
-    // Quando soltar
     column.addEventListener('drop', function() {
         this.classList.remove('drag-over');
         if (draggedTask) {
-            this.querySelector('.task-container').appendChild(draggedTask);
+            const container = this.querySelector('.task-container');
+            container.appendChild(draggedTask);
+            saveTasks();
         }
     });
 });
+
+// Carrega as tarefas salvas ao iniciar a página
+loadTasks();
