@@ -7,6 +7,47 @@ const initialTasks = document.querySelectorAll('.task');
 
 let draggedTask = null;
 
+function createTaskElement(content) {
+    const task = document.createElement('div');
+    task.className = 'task';
+    task.setAttribute('draggable', 'true');
+
+    const textSpan = document.createElement('span');
+    textSpan.textContent = content;
+    
+    const actionsDiv = document.createElement('div');
+    actionsDiv.className = 'task-actions';
+
+    const editBtn = document.createElement('button');
+    editBtn.className = 'btn-edit';
+    editBtn.innerHTML = '<i class="ph ph-pencil-simple"></i>';
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn-delete';
+    deleteBtn.innerHTML = '<i class="ph ph-trash"></i>';
+
+    actionsDiv.appendChild(editBtn);
+    actionsDiv.appendChild(deleteBtn);
+    task.appendChild(textSpan);
+    task.appendChild(actionsDiv);
+
+    deleteBtn.addEventListener('click', function(e) {
+        e.stopPropagation(); // Impede que o clique ative o "arrastar"
+        task.remove();
+    });
+
+    editBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const newText = prompt("Edite sua tarefa:", textSpan.textContent);
+        if (newText !== null && newText.trim() !== "") {
+            textSpan.textContent = newText.trim();
+        }
+    });
+
+    attachDragEvents(task); 
+    return task;
+}
+
 // função para eventos de drag arrastar e soltar
 function attachDragEvents(taskElement) {
     taskElement.addEventListener('dragstart', function() {
@@ -22,15 +63,11 @@ function attachDragEvents(taskElement) {
 
 //função para adicionar novas tarefas
 function addTask() {
-    if (inputTask.value.trim() === '') return; // Evita adicionar tarefas vazias
+    if (inputTask.value.trim() === '') return;
 
-    const newTask = document.createElement('div');
-    newTask.className = 'task';
-    newTask.setAttribute('draggable', 'true');
-    newTask.textContent = inputTask.value.trim();
-
-    attachDragEvents(newTask);
-
+    // Chama a função nova que cria tudo estruturado
+    const newTask = createTaskElement(inputTask.value.trim());
+    
     containerTodo.appendChild(newTask);
     
     inputTask.value = '';

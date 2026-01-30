@@ -126,6 +126,9 @@ body {
     font-size: 15px;
     border-left: 4px solid transparent;
     transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .task:hover {
@@ -157,4 +160,41 @@ body {
 .drag-over {
     background-color: #dbe2ef !important;
     transform: scale(1.01);
+}
+
+.task-actions {
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.task:hover .task-actions {
+    opacity: 1;
+}
+
+.btn-edit, .btn-delete {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 6px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    color: #a0a0a0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-edit:hover { 
+    background-color: #e3f2fd; 
+    color: #2196f3;
+    transform: scale(1.1);
+}
+
+.btn-delete:hover { 
+    background-color: #ffebee; 
+    color: #f44336;
+    transform: scale(1.1);
 }
