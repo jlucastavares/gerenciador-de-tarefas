@@ -4,8 +4,40 @@ const containerTodo = document.getElementById('container-todo');
 // Seleciona as colunas e tsks iniciais
 const columns = document.querySelectorAll('.column');
 const initialTasks = document.querySelectorAll('.task');
+// Seleção do modal de edição
+const modal = document.getElementById('modal-edit');
+const modalInput = document.getElementById('modal-input');
+const modalSaveBtn = document.getElementById('modal-save');
+const modalCancelBtn = document.getElementById('modal-cancel');
 
 let draggedTask = null;
+
+function openModal(textElement) {
+    currentTaskTextElement = textElement;
+    modalInput.value = textElement.textContent;
+    modal.classList.remove('hidden');
+    modalInput.focus();
+}
+
+function closeModal() {
+    modal.classList.add('hidden');
+    currentTaskTextElement = null;
+}
+
+modalCancelBtn.addEventListener('click', closeModal);
+
+modalSaveBtn.addEventListener('click', function() {
+    if (modalInput.value.trim() !== "") {
+        currentTaskTextElement.textContent = modalInput.value.trim();
+        closeModal();
+    }
+});
+
+modalInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        modalSaveBtn.click();
+    }
+});
 
 function createTaskElement(content) {
     const task = document.createElement('div');
@@ -38,10 +70,7 @@ function createTaskElement(content) {
 
     editBtn.addEventListener('click', function(e) {
         e.stopPropagation();
-        const newText = prompt("Edite sua tarefa:", textSpan.textContent);
-        if (newText !== null && newText.trim() !== "") {
-            textSpan.textContent = newText.trim();
-        }
+        openModal(textSpan);
     });
 
     attachDragEvents(task); 
