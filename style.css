@@ -173,7 +173,8 @@ body {
     opacity: 1;
 }
 
-.btn-edit, .btn-delete {
+.btn-edit,
+.btn-delete {
     background: none;
     border: none;
     cursor: pointer;
@@ -187,14 +188,99 @@ body {
     justify-content: center;
 }
 
-.btn-edit:hover { 
-    background-color: #e3f2fd; 
+.btn-edit:hover {
+    background-color: #e3f2fd;
     color: #2196f3;
     transform: scale(1.1);
 }
 
-.btn-delete:hover { 
-    background-color: #ffebee; 
+.btn-delete:hover {
+    background-color: #ffebee;
     color: #f44336;
     transform: scale(1.1);
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+
+.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transform: scale(1);
+    transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+
+.hidden .modal-content {
+    transform: scale(0.9);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: var(--text-primary);
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    margin: 15px 0 25px 0;
+    box-sizing: border-box;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+}
+
+.btn-primary {
+    background: #5b9bd5;
+    color: white;
+}
+
+.btn-secondary {
+    background: #e2e4e6;
+    color: #333;
+}
+
+.btn-primary:hover {
+    background: #4a8ac2;
+}
+
+.btn-secondary:hover {
+    background: #d0d2d4;
 }
