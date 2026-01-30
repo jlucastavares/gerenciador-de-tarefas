@@ -1,68 +1,73 @@
 const addButton = document.querySelector('.add');
-const tasks = document.querySelectorAll('.task');
+const inputTask = document.getElementById('input-task');
+const containerTodo = document.getElementById('container-todo');
+// Seleciona as colunas e tsks iniciais
 const columns = document.querySelectorAll('.column');
+const initialTasks = document.querySelectorAll('.task');
 
-let draggedTask = null; // Variável para guardar o que estamos arrastando
+let draggedTask = null;
 
-function addTask() {
-    const inputTask = document.getElementById('input-task');
-    if (inputTask.value.trim() === '') {
-        return; // Não adiciona tarefa vazia
-    }   
-    const container = document.getElementById('container-todo');
-
-    const task = document.createElement('div');
-    task.className = 'task';
-    task.setAttribute('draggable', 'true');
-    task.textContent = inputTask.value.trim();
-    
-    task.addEventListener('dragstart', function() {
+// função para eventos de drag arrastar e soltar
+function attachDragEvents(taskElement) {
+    taskElement.addEventListener('dragstart', function() {
         draggedTask = this;
         this.classList.add('dragging');
     });
 
-    task.addEventListener('dragend', function() {
+    taskElement.addEventListener('dragend', function() {
         draggedTask = null;
         this.classList.remove('dragging');
     });
+}
 
-    container.appendChild(task);
+//função para adicionar novas tarefas
+function addTask() {
+    if (inputTask.value.trim() === '') return; // Evita adicionar tarefas vazias
 
+    const newTask = document.createElement('div');
+    newTask.className = 'task';
+    newTask.setAttribute('draggable', 'true');
+    newTask.textContent = inputTask.value.trim();
+
+    attachDragEvents(newTask);
+
+    containerTodo.appendChild(newTask);
+    
     inputTask.value = '';
     inputTask.focus();
 }
 
+// adiciona eventos para as tasks que ja foram criadas no html
+initialTasks.forEach(task => attachDragEvents(task));
 
-tasks.forEach(task => {
-    task.addEventListener('dragstart', function() {
-        draggedTask = this; // 'this' é o elemento que foi clicado
-        this.classList.add('dragging'); // Adiciona a classe dragging
-    });
+// adiciona evento ao botão de adicionar tarefa
+addButton.addEventListener('click', addTask);
 
-    // Quando terminar de arrastar
-    task.addEventListener('dragend', function() {
-        draggedTask = null;
-        this.classList.remove('dragging');
-    });
+// adiciona suporte à tecla ENTER
+inputTask.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        addTask();
+    }
 });
 
+// Lógica das colunas
 columns.forEach(column => {
-    // O evento 'dragover' é disparado continuamente quando passamos algo por cima
+    // Quando arrastar por cima
     column.addEventListener('dragover', function(e) {
-        e.preventDefault(); // Necessário para permitir o "drop" (soltar)
-        this.style.backgroundColor = '#d3d5d8'; // Muda cor da coluna pra dar feedback
+        e.preventDefault();
+        this.classList.add('drag-over'); // Adiciona classe CSS em vez de mudar estilo direto
     });
 
-    // Quando o mouse sai de cima da coluna
+    // Quando sair de cima
     column.addEventListener('dragleave', function() {
-        this.style.backgroundColor = '#e2e4e6'; // Volta a cor original
+        this.classList.remove('drag-over');
     });
 
-    // Quando soltamos o item na coluna
+    // Quando soltar
     column.addEventListener('drop', function() {
-        this.style.backgroundColor = '#e2e4e6'; // Volta a cor original
-        // Adiciona a tarefa arrastada dentro do container desta coluna
-        // O querySelector pega a div interna onde ficam as tarefas
-        this.querySelector('.task-container').appendChild(draggedTask);
+        this.classList.remove('drag-over');
+        if (draggedTask) {
+            this.querySelector('.task-container').appendChild(draggedTask);
+        }
     });
 });

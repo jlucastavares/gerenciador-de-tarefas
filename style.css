@@ -1,80 +1,160 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+:root {
+    --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    --column-bg: #ebecf0;
+    --card-bg: #ffffff;
+    --text-primary: #172b4d;
+    --text-secondary: #5e6c84;
+    --color-todo: #ff5c5c;
+    /* Vermelho suave */
+    --color-doing: #5b9bd5;
+    /* Azul calmo */
+    --color-done: #4caf50;
+    /* Verde sucesso */
+}
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    font-family: 'Poppins', sans-serif;
+    background: var(--bg-gradient);
+    background-attachment: fixed;
+    color: var(--text-primary);
     margin: 0;
-    padding: 20px;
+    padding: 40px;
+    height: 100vh;
+    box-sizing: border-box;
 }
 
-.board {
-    display: flex; /* Coloca as colunas lado a lado */
-    justify-content: space-around;
-    gap: 20px;
-}
-
-.column {
-    background-color: #e2e4e6;
-    width: 30%;
-    border-radius: 8px;
-    padding: 10px;
-    min-height: 400px; /* Garante altura mesmo vazia */
-}
-
-h2 {
-    text-align: center;
-    color: #333;
-}
-
-.task {
-    background-color: white;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    cursor: grab; /* Mostra a mãozinha ao passar o mouse */
-}
-
-/* Efeito visual quando estamos arrastando algo por cima */
-.dragging {
-    opacity: 0.5;
-    border: 2px dashed #666;
-}
-
-/* Input e add button */
 .input {
     display: flex;
-    gap: 8px;
-    align-items: center;
-    max-width: 600px;
-    margin-bottom: 20px;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 50px;
+    position: relative;
 }
 
 .input input {
-    flex: 1;
-    padding: 10px 12px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
+    width: 400px;
+    padding: 15px 20px;
+    border-radius: 50px;
+    border: none;
+    font-family: 'Poppins', sans-serif;
     font-size: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.input input:focus {
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px rgba(91, 155, 213, 0.3);
 }
 
 .add {
-    width: 44px;
-    height: 44px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
-    background: #4CAF50;
-    color: #fff;
+    background: linear-gradient(45deg, #4caf50, #81c784);
+    color: white;
     border: none;
-    display: inline-flex;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+    transition: transform 0.2s;
+    display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    padding-bottom: 4px;
 }
 
 .add:hover {
-    background: #43a047;
+    transform: rotate(90deg) scale(1.1);
 }
 
-.add:focus {
-    outline: 3px solid rgba(67,160,71,0.25);
+.board {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.column {
+    background-color: var(--column-bg);
+    width: 32%;
+    border-radius: 12px;
+    padding: 16px;
+    min-height: 200px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.3s;
+}
+
+.column h2 {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ccc;
+    color: var(--text-secondary);
+}
+
+#todo h2 {
+    border-color: var(--color-todo);
+    color: var(--color-todo);
+}
+
+#doing h2 {
+    border-color: var(--color-doing);
+    color: var(--color-doing);
+}
+
+#done h2 {
+    border-color: var(--color-done);
+    color: var(--color-done);
+}
+
+.task {
+    background-color: var(--card-bg);
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    cursor: grab;
+    font-size: 15px;
+    border-left: 4px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.task:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+#todo .task {
+    border-left-color: var(--color-todo);
+}
+
+#doing .task {
+    border-left-color: var(--color-doing);
+}
+
+#done .task {
+    border-left-color: var(--color-done);
+    text-decoration: line-through;
+    opacity: 0.8;
+}
+
+.dragging {
+    opacity: 0.5;
+    border: 2px dashed #999;
+    background: #f0f0f0;
+    transform: scale(0.95);
+}
+
+.drag-over {
+    background-color: #dbe2ef !important;
+    transform: scale(1.01);
 }
