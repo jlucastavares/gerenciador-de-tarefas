@@ -6,6 +6,8 @@ const modal = document.getElementById('modal-edit');
 const modalInput = document.getElementById('modal-input');
 const modalSaveBtn = document.getElementById('modal-save');
 const modalCancelBtn = document.getElementById('modal-cancel');
+const searchInput = document.getElementById('search-input');
+const clearSearchBtn = document.getElementById('clear-search');
 
 let draggedTask = null;
 let currentTaskTextElement = null;
@@ -193,5 +195,34 @@ columns.forEach(column => {
     });
 });
 
+function filterTasks() {
+    const searchTerm = searchInput.value.toLowerCase();
+    const allTasks = document.querySelectorAll('.task');
+
+    if (searchTerm !== "") {
+        clearSearchBtn.classList.remove('hidden');
+    }
+    else {
+        clearSearchBtn.classList.add('hidden');
+    }
+
+    allTasks.forEach(task => {
+        const taskText = task.querySelector('span').textContent.toLowerCase();
+        if (taskText.includes(searchTerm)) {
+            task.classList.remove('hidden');
+        } else {
+            task.classList.add('hidden');
+        }
+    })
+}
+
+searchInput.addEventListener('input', filterTasks);
+
+clearSearchBtn.addEventListener('click', function() {
+    searchInput.value = '';
+    filterTasks();
+    searchInput.focus();
+});
+
 // Carrega as tarefas salvas ao iniciar a página
-loadTasks();
+loadTasks();    
