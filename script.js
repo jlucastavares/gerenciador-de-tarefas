@@ -8,6 +8,8 @@ const modalSaveBtn = document.getElementById('modal-save');
 const modalCancelBtn = document.getElementById('modal-cancel');
 const searchInput = document.getElementById('search-input');
 const clearSearchBtn = document.getElementById('clear-search');
+const inputPriority = document.getElementById('input-priority');
+const modalPriorityInput = document.getElementById('modal-priority');
 
 let draggedTask = null;
 let currentTaskTextElement = null;
@@ -29,11 +31,16 @@ function saveTasks() {
     Object.keys(containers).forEach(key => {
         const container = containers[key];
         const tasks = container.querySelectorAll('.task');
-        
+
         tasks.forEach(task => {
             const textSpan = task.querySelector('span');
+            const cleanText = textSpan.innerText.trim();
+            const priority = task.dataset.priority || 'low';
             if (textSpan) {
-                tasksData[key].push(textSpan.textContent);
+                tasksData[key].push({
+                    text: cleanText,
+                    priority: priority
+                });
             }
         });
     });
@@ -47,7 +54,7 @@ function loadTasks() {
     if (savedData) {
         try {
             const tasksData = JSON.parse(savedData);
-            
+
             const containers = {
                 todo: document.getElementById('container-todo'),
                 doing: document.getElementById('container-doing'),
@@ -59,12 +66,15 @@ function loadTasks() {
                 const taskList = tasksData[key];
                 const container = containers[key];
 
-                container.innerHTML = ''; 
+                container.innerHTML = '';
 
                 if (Array.isArray(taskList)) {
                     taskList.forEach(taskText => {
-                        const newTaskElement = createTaskElement(taskText);
-                        container.appendChild(newTaskElement);
+                        if (typeof taskText === 'object') {
+                            container.appendChild(createTaskElement(taskText.text, taskText.priority))
+                        } else {
+                            container.appendChild(createTaskElement(taskText.text, 'low'));
+                        }
                     });
                 }
             });
@@ -78,6 +88,9 @@ function loadTasks() {
 function openModal(textElement) {
     currentTaskTextElement = textElement;
     modalInput.value = textElement.textContent;
+    const taskElement = textElement.closest('.task');
+    const currentPriority = taskElement.dataset.priority || 'low';
+    modalPriorityInput.value = currentPriority;
     modal.classList.remove('hidden');
     modalInput.focus();
 }
@@ -91,36 +104,54 @@ modalCancelBtn.addEventListener('click', closeModal);
 
 modalSaveBtn.addEventListener('click', function() {
     if (modalInput.value.trim() !== "" && currentTaskTextElement) {
-        currentTaskTextElement.textContent = modalInput.value.trim();
+        const taskElement = currentTaskTextElement.closest('.task');
+        const newPriority = modalPriorityInput.value;
+        
+        taskElement.dataset.priority = newPriority;
+
+        currentTaskTextElement.innerHTML = '';
+
+        const newBadge = document.createElement('div');
+        newBadge.className = `task-priority priority-${newPriority}`;
+
+        currentTaskTextElement.appendChild(newBadge);
+        currentTaskTextElement.appendChild(document.createTextNode(modalInput.value.trim()));
+
         saveTasks();
         closeModal();
     }
 });
 
-modalInput.addEventListener('keypress', function(e) {
+modalInput.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') modalSaveBtn.click();
 });
 
 function attachDragEvents(taskElement) {
-    taskElement.addEventListener('dragstart', function() {
+    taskElement.addEventListener('dragstart', function () {
         draggedTask = this;
         this.classList.add('dragging');
     });
 
-    taskElement.addEventListener('dragend', function() {
+    taskElement.addEventListener('dragend', function () {
         draggedTask = null;
         this.classList.remove('dragging');
     });
 }
 
-function createTaskElement(content) {
+function createTaskElement(content, priority = 'low') {
     const task = document.createElement('div');
     task.className = 'task';
     task.setAttribute('draggable', 'true');
+    task.dataset.priority = priority;
 
     const textSpan = document.createElement('span');
-    textSpan.textContent = content;
-    
+
+    const badge = document.createElement('div');
+    badge.className = `task-priority priority-${priority}`;
+
+    textSpan.appendChild(badge);
+    textSpan.appendChild(document.createTextNode(content));
+
     const actionsDiv = document.createElement('div');
     actionsDiv.className = 'task-actions';
 
@@ -132,13 +163,13 @@ function createTaskElement(content) {
     deleteBtn.className = 'btn-delete';
     deleteBtn.innerHTML = '<i class="ph ph-trash"></i>';
 
-    deleteBtn.addEventListener('click', function(e) {
+    deleteBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         task.remove();
-        saveTasks(); 
+        saveTasks();
     });
 
-    editBtn.addEventListener('click', function(e) {
+    editBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         openModal(textSpan);
     });
@@ -148,44 +179,47 @@ function createTaskElement(content) {
     task.appendChild(textSpan);
     task.appendChild(actionsDiv);
 
-    attachDragEvents(task); 
+    attachDragEvents(task);
 
     return task;
 }
 
 function addTask() {
     const text = inputTask.value.trim();
+    const priority = inputPriority.value;
+
     if (text === '') return;
 
-    const newTask = createTaskElement(text);
+    const newTask = createTaskElement(text, priority);
     containerTodo.appendChild(newTask);
-    
+
     saveTasks();
-    
+
     inputTask.value = '';
     inputTask.focus();
+    inputPriority.value = 'low';
 }
 
 // Adiciona evento ao botão de adicionar
 addButton.addEventListener('click', addTask);
 
 //tecla ENTER no input principal
-inputTask.addEventListener('keypress', function(e) {
+inputTask.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') addTask();
 });
 
 // Lógica das Colunas
 columns.forEach(column => {
-    column.addEventListener('dragover', function(e) {
+    column.addEventListener('dragover', function (e) {
         e.preventDefault();
         this.classList.add('drag-over');
     });
 
-    column.addEventListener('dragleave', function() {
+    column.addEventListener('dragleave', function () {
         this.classList.remove('drag-over');
     });
 
-    column.addEventListener('drop', function() {
+    column.addEventListener('drop', function () {
         this.classList.remove('drag-over');
         if (draggedTask) {
             const container = this.querySelector('.task-container');
@@ -209,16 +243,16 @@ function filterTasks() {
     allTasks.forEach(task => {
         const taskText = task.querySelector('span').textContent.toLowerCase();
         if (taskText.includes(searchTerm)) {
-            task.classList.remove('hidden');
+            task.style.display = 'flex';
         } else {
-            task.classList.add('hidden');
+            task.style.display = 'none';
         }
     })
 }
 
 searchInput.addEventListener('input', filterTasks);
 
-clearSearchBtn.addEventListener('click', function() {
+clearSearchBtn.addEventListener('click', function () {
     searchInput.value = '';
     filterTasks();
     searchInput.focus();

@@ -22,6 +22,11 @@
     </header>
     <div class="input">
         <input placeholder="Digite a sua tarefa" type="text" id="input-task">
+        <select id="input-priority">
+            <option value="low">Baixa</option>
+            <option value="medium">Média</option>
+            <option value="high">Alta</option>
+        </select>
         <button class="add" aria-label="Adicionar Tarefa" title="Adicionar" id="add-button">+</button>
     </div>
     <div class="board">
@@ -49,6 +54,15 @@
         <div class="modal-content">
             <h3>Editar Tarefa</h3>
             <input type="text" id="modal-input" placeholder="Digite o novo nome da sua tarefa...">
+
+            <label for="modal-priority"
+                style="font-size: 14px; color: #666; display: block; margin-bottom: 5px;">Prioridade:</label>
+            <select id="modal-priority"
+                style="width: 100%; margin-bottom: 20px; padding: 10px; border-radius: 6px; border: 1px solid #ddd;">
+                <option value="low">Baixa</option>
+                <option value="medium">Média</option>
+                <option value="high">Alta</option>
+            </select>
 
             <div class="modal-actions">
                 <button id="modal-cancel" class="btn-secondary">Cancelar</button>
