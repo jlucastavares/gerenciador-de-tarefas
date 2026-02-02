@@ -340,6 +340,11 @@ div.div-btn-add {
     transform: scale(0.95);
 }
 
+body .dark-mode .dragging {
+    opacity: 0.3;
+    background: #3a3f4b;
+}
+
 .drag-over {
     background-color: #dbe2ef !important;
     transform: scale(1.01);
