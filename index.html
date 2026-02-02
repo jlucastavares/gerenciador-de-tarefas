@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Teste</title>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="style.css">
@@ -12,22 +12,35 @@
 <body>
     <header class="app-header">
         <h1>Kanban</h1>
-        <div class="search-box">
-            <i class="ph ph-magnifying-glass"></i>
-            <input type="text" id="search-input" placeholder="Buscar tarefas...">
-            <button id="clear-search" class="btn-clear hidden">
-                X
+        <div style="display: flex; align-items: center; gap: 15px;">
+
+            <div class="search-box">
+                <i class="ph ph-magnifying-glass"></i>
+                <input type="text" id="search-input" placeholder="Buscar tarefas...">
+                <button id="clear-search" class="btn-clear hidden">
+                    X
+                </button>
+            </div>
+
+            <button id="theme-toggle" class="btn-theme" title="Alternar Tema">
+                <i class="ph ph-moon"></i>
             </button>
+
         </div>
     </header>
     <div class="input">
-        <input placeholder="Digite a sua tarefa" type="text" id="input-task">
-        <select id="input-priority">
-            <option value="low">Baixa</option>
-            <option value="medium">Média</option>
-            <option value="high">Alta</option>
-        </select>
-        <button class="add" aria-label="Adicionar Tarefa" title="Adicionar" id="add-button">+</button>
+        <div class="div-input">
+            <input placeholder="Digite a sua tarefa" type="text" id="input-task">
+            <select id="input-priority">
+                <option value="low">Baixa</option>
+                <option value="medium">Média</option>
+                <option value="high">Alta</option>
+            </select>
+        </div>
+        <div class="div-btn-add">
+            <button class="add" aria-label="Adicionar Tarefa" title="Adicionar" id="add-button">+</button>
+        </div>
+
     </div>
     <div class="board">
         <div class="column" id="todo">
@@ -53,6 +66,7 @@
     <div id="modal-edit" class="modal-backdrop hidden">
         <div class="modal-content">
             <h3>Editar Tarefa</h3>
+            <label for="modal-priority" style="font-size: 14px; color: #666; display: block;;">Nome:</label>
             <input type="text" id="modal-input" placeholder="Digite o novo nome da sua tarefa...">
 
             <label for="modal-priority"
