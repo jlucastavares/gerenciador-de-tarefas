@@ -20,11 +20,12 @@ body {
     background-attachment: fixed;
     color: var(--text-primary);
     margin: 0;
-    padding: 40px;
-    height: 100vh;
+    padding: 40px 40px 0 40px;
+    min-height: 100vh;
     box-sizing: border-box;
     overflow-x: hidden;
-    /* Proíbe rolagem lateral */
+    display: flex;
+    flex-direction: column;
 }
 
 .app-header {
@@ -472,6 +473,71 @@ body.dark-mode .drag-over {
     background: #d0d2d4;
 }
 
+.app-footer {
+    margin-top: auto;
+    padding: 30px 0;
+    width: 100%;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    align-self: center; 
+}
+
+body.dark-mode .app-footer {
+    border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.footer-content strong {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.text-highlight {
+    color: var(--color-doing);
+    font-size: 1.1rem;
+    vertical-align: middle;
+}
+
+.social-links {
+    display: flex;
+    gap: 20px;
+}
+
+.social-links a {
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+.social-links a:hover {
+    color: var(--color-doing);
+    transform: translateY(-3px);
+}
+
+.copyright {
+    text-align: center;
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+@media (min-width: 768px) {
+    .footer-content {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
 @media (max-width: 768px) {
 
     .app-header {
@@ -555,12 +621,14 @@ body.dark-mode .drag-over {
     .modal-actions{
         flex-direction: column;
     }
+
+    .app-footer {
+        padding-bottom: 20px;
+    }
 }
 
 @media (max-width: 577) {
     .input input {
         width: 100%;
     }
-
-
 }
