@@ -12,15 +12,19 @@ const inputPriority = document.getElementById('input-priority');
 const modalPriorityInput = document.getElementById('modal-priority');
 const themeToggleBtn = document.getElementById('theme-toggle');
 const themeIcon = themeToggleBtn.querySelector('i');
+const inputDeadline = document.getElementById('input-deadline');
+const modalDeadlineInput = document.getElementById('modal-deadline');
+const dateInputs = document.querySelectorAll('input[type="date"]');
 
 let draggedTask = null;
 let currentTaskTextElement = null;
 
+// VERSÃO ROBUSTA DO SAVETASKS (Use esta)
 function saveTasks() {
     const tasksData = {
-        todo: [],
-        doing: [],
-        done: []
+         todo: [], 
+         doing: [], 
+         done: [] 
     };
 
     const containers = {
@@ -29,21 +33,29 @@ function saveTasks() {
         done: document.getElementById('container-done')
     };
 
-    // Percorre cada coluna e salva o texto das tarefas
     Object.keys(containers).forEach(key => {
         const container = containers[key];
         const tasks = container.querySelectorAll('.task');
 
         tasks.forEach(task => {
-            const textSpan = task.querySelector('span');
-            const cleanText = textSpan.innerText.trim();
+            // A prioridade e data estão seguras no dataset
             const priority = task.dataset.priority || 'low';
-            if (textSpan) {
-                tasksData[key].push({
-                    text: cleanText,
-                    priority: priority
-                });
-            }
+            const deadline = task.dataset.deadline || '';
+
+            const textSpan = task.querySelector('span');
+            let text = "";
+
+            textSpan.childNodes.forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    text += node.textContent;
+                }
+            });
+
+            tasksData[key].push({
+                text: text.trim(),
+                priority: priority,
+                deadline: deadline
+            });
         });
     });
 
@@ -73,9 +85,9 @@ function loadTasks() {
                 if (Array.isArray(taskList)) {
                     taskList.forEach(taskText => {
                         if (typeof taskText === 'object') {
-                            container.appendChild(createTaskElement(taskText.text, taskText.priority))
+                            container.appendChild(createTaskElement(taskText.text, taskText.priority, taskText.deadline));
                         } else {
-                            container.appendChild(createTaskElement(taskText.text, 'low'));
+                            container.appendChild(createTaskElement(taskText.text, 'low', ''));
                         }
                     });
                 }
@@ -93,7 +105,7 @@ function toggleTheme() {
     if (isDark) {
         themeIcon.classList.replace('ph-sun', 'ph-moon');
         localStorage.setItem('kanbanTheme', 'dark');
-    } else{
+    } else {
         themeIcon.classList.replace('ph-moon', 'ph-sun');
         localStorage.setItem('kanbanTheme', 'light');
     }
@@ -111,10 +123,19 @@ themeToggleBtn.addEventListener('click', toggleTheme);
 
 function openModal(textElement) {
     currentTaskTextElement = textElement;
-    modalInput.value = textElement.textContent;
+
+    let currentText = "";
+    textElement.childNodes.forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) currentText += node.textContent;
+    });
+
+    modalInput.value = currentText.trim();
+
     const taskElement = textElement.closest('.task');
     const currentPriority = taskElement.dataset.priority || 'low';
+    const currentDeadline = taskElement.dataset.deadline || '';
     modalPriorityInput.value = currentPriority;
+    modalDeadlineInput.value = currentDeadline;
     modal.classList.remove('hidden');
     modalInput.focus();
 }
@@ -126,20 +147,39 @@ function closeModal() {
 
 modalCancelBtn.addEventListener('click', closeModal);
 
-modalSaveBtn.addEventListener('click', function() {
+modalSaveBtn.addEventListener('click', function () {
     if (modalInput.value.trim() !== "" && currentTaskTextElement) {
         const taskElement = currentTaskTextElement.closest('.task');
         const newPriority = modalPriorityInput.value;
-        
+        const newDeadline = modalDeadlineInput.value;
+
         taskElement.dataset.priority = newPriority;
+        taskElement.dataset.deadline = newDeadline;
 
         currentTaskTextElement.innerHTML = '';
 
         const newBadge = document.createElement('div');
         newBadge.className = `task-priority priority-${newPriority}`;
-
         currentTaskTextElement.appendChild(newBadge);
+
         currentTaskTextElement.appendChild(document.createTextNode(modalInput.value.trim()));
+
+        taskElement.classList.remove('overdue');
+
+        if (newDeadline) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const taskDate = new Date(newDeadline + 'T00:00:00');
+            if (taskDate < today) {
+                taskElement.classList.add('overdue');
+                taskElement.title = "Esta tarefa está atrasada!";
+            }
+            const deadlineSpan = document.createElement('span');
+            deadlineSpan.className = 'task-deadline';
+            const dateFormatted = newDeadline.split('-').reverse().join('/');
+            deadlineSpan.innerHTML = `<i class="ph ph-clock"></i> ${dateFormatted}`;
+            currentTaskTextElement.appendChild(deadlineSpan);
+        }   
 
         saveTasks();
         closeModal();
@@ -162,11 +202,25 @@ function attachDragEvents(taskElement) {
     });
 }
 
-function createTaskElement(content, priority = 'low') {
+function createTaskElement(content, priority = 'low', deadline = '') {
     const task = document.createElement('div');
     task.className = 'task';
     task.setAttribute('draggable', 'true');
     task.dataset.priority = priority;
+
+    task.dataset.deadline = deadline;
+
+    if (deadline) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const taskDate = new Date(deadline + 'T00:00:00');
+
+        if (taskDate < today) {
+            task.classList.add('overdue');
+            task.title = "Esta tarefa está atrasada!";
+        }
+    }
 
     const textSpan = document.createElement('span');
 
@@ -175,6 +229,14 @@ function createTaskElement(content, priority = 'low') {
 
     textSpan.appendChild(badge);
     textSpan.appendChild(document.createTextNode(content));
+
+    if (deadline) {
+        const deadlineSpan = document.createElement('span');
+        deadlineSpan.className = 'task-deadline';
+        const dateFormatted = deadline.split('-').reverse().join('/');
+        deadlineSpan.innerHTML = `<i class="ph ph-clock"></i> ${dateFormatted}`;
+        textSpan.appendChild(deadlineSpan);
+    }
 
     const actionsDiv = document.createElement('div');
     actionsDiv.className = 'task-actions';
@@ -211,10 +273,11 @@ function createTaskElement(content, priority = 'low') {
 function addTask() {
     const text = inputTask.value.trim();
     const priority = inputPriority.value;
+    const deadline = inputDeadline.value;
 
     if (text === '') return;
 
-    const newTask = createTaskElement(text, priority);
+    const newTask = createTaskElement(text, priority, deadline);
     containerTodo.appendChild(newTask);
 
     saveTasks();
@@ -222,6 +285,7 @@ function addTask() {
     inputTask.value = '';
     inputTask.focus();
     inputPriority.value = 'low';
+    inputDeadline.value = '';
 }
 
 // Adiciona evento ao botão de adicionar
@@ -282,6 +346,17 @@ clearSearchBtn.addEventListener('click', function () {
     searchInput.focus();
 });
 
+function ajustLabel() {
+    const divLabel = document.querySelector('.div-input.task-input');
+    const larguraTela = window.innerWidth;
+
+    if (larguraTela <= 768) {
+        divLabel.innerHTML = '<label for="input-task" class="label-input-task">Digite o nome da sua nova Tarefa:</label> <input placeholder="Digite a sua tarefa" type="text" id="input-task">';
+    } else {
+        divLabel.innerHTML = '<input placeholder="Digite a sua tarefa" type="text" id="input-task">';
+    }
+}
+
 function ajustReponsive() {
     const botao = document.querySelector('.add');
     const larguraTela = window.innerWidth;
@@ -294,8 +369,24 @@ function ajustReponsive() {
 }
 
 window.addEventListener('resize', ajustReponsive);
+window.addEventListener('resize', ajustLabel);
+
+dateInputs.forEach(input => {
+    const checkValue = () => {
+        if (input.value !== "") {
+            input.classList.add('has-value');
+        } else {
+            input.classList.remove('has-value');
+        }
+    };
+
+    input.addEventListener('change', checkValue);
+    input.addEventListener('blur', checkValue);
+    
+    checkValue(); 
+});
 
 // Carrega as tarefas salvas ao iniciar a página
-loadTasks();    
+loadTasks();
 loadTheme();
 ajustReponsive();
