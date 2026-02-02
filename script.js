@@ -10,6 +10,8 @@ const searchInput = document.getElementById('search-input');
 const clearSearchBtn = document.getElementById('clear-search');
 const inputPriority = document.getElementById('input-priority');
 const modalPriorityInput = document.getElementById('modal-priority');
+const themeToggleBtn = document.getElementById('theme-toggle');
+const themeIcon = themeToggleBtn.querySelector('i');
 
 let draggedTask = null;
 let currentTaskTextElement = null;
@@ -84,6 +86,28 @@ function loadTasks() {
         }
     }
 }
+
+function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    if (isDark) {
+        themeIcon.classList.replace('ph-sun', 'ph-moon');
+        localStorage.setItem('kanbanTheme', 'dark');
+    } else{
+        themeIcon.classList.replace('ph-moon', 'ph-sun');
+        localStorage.setItem('kanbanTheme', 'light');
+    }
+}
+
+function loadTheme() {
+    const savedTheme = localStorage.getItem('kanbanTheme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+        themeIcon.classList.replace('ph-sun', 'ph-moon');
+    }
+}
+
+themeToggleBtn.addEventListener('click', toggleTheme);
 
 function openModal(textElement) {
     currentTaskTextElement = textElement;
@@ -258,5 +282,20 @@ clearSearchBtn.addEventListener('click', function () {
     searchInput.focus();
 });
 
+function ajustReponsive() {
+    const botao = document.querySelector('.add');
+    const larguraTela = window.innerWidth;
+
+    if (larguraTela <= 768) {
+        botao.innerHTML = '+ Adicionar Tarefa';
+    } else {
+        botao.innerHTML = '+';
+    }
+}
+
+window.addEventListener('resize', ajustReponsive);
+
 // Carrega as tarefas salvas ao iniciar a página
 loadTasks();    
+loadTheme();
+ajustReponsive();

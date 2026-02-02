@@ -23,6 +23,8 @@ body {
     padding: 40px;
     height: 100vh;
     box-sizing: border-box;
+    overflow-x: hidden;
+    /* Proíbe rolagem lateral */
 }
 
 .app-header {
@@ -95,6 +97,70 @@ body {
 
 .hidden {
     display: none !important;
+}
+
+.btn-theme {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--text-primary);
+    transition: all 0.3s;
+}
+
+.btn-theme:hover {
+    transform: scale(1.1);
+    background-color: #f0f0f0;
+}
+
+body.dark-mode {
+    --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    --column-bg: #252a34;
+    --card-bg: #323846;
+    --text-primary: #eaeaea;
+    --text-secondary: #b0b0b0;
+}
+
+body.dark-mode .input input,
+body.dark-mode #input-priority,
+body.dark-mode .search-box input,
+body.dark-mode .modal-content input,
+body.dark-mode .modal-content select {
+    background-color: #323846;
+    border-color: #4a4a4a;
+    color: #eaeaea;
+}
+
+body.dark-mode .modal-content {
+    background-color: #252a34;
+    color: #eaeaea;
+}
+
+body.dark-mode .btn-theme {
+    background-color: #323846;
+    border-color: #4a4a4a;
+    color: #ffd700;
+}
+
+.div-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 0px;
+    position: relative;
+}
+
+div.div-btn-add {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .input {
@@ -278,6 +344,11 @@ body {
     transform: scale(1.01);
 }
 
+body.dark-mode .drag-over {
+    background-color: #383d49 !important;
+    transform: scale(1.01);
+}
+
 .task-actions {
     display: flex;
     gap: 8px;
@@ -363,7 +434,7 @@ body {
     border: 1px solid #ddd;
     border-radius: 6px;
     font-size: 16px;
-    margin: 15px 0 25px 0;
+    margin: 5px 0 25px 0;
     box-sizing: border-box;
 }
 
@@ -399,4 +470,97 @@ body {
 
 .btn-secondary:hover {
     background: #d0d2d4;
+}
+
+@media (max-width: 768px) {
+
+    .app-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .btn-clear {
+        left: 39%;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .input {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .input input {
+        width: 70%;
+    }
+
+    .input select {
+        width: 30%;
+    }
+
+    .add {
+        width: 70%;
+        border-radius: 30px;
+        margin: 0;
+        font-family: Poppins, sans-serif;
+        font-size: 16px;
+        padding-bottom: 9px;
+    }
+
+    .board {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 16px;
+        gap: 24px;
+        margin-top: 10px;
+    }
+
+    .column {
+        width: 100%;
+        min-width: auto;
+        border-radius: 12px;
+        padding: 12px;
+    }
+
+
+    h1,
+    h2,
+    h3 {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .task {
+        padding: 16px;
+        margin-bottom: 12px;
+        font-size: 0.95rem;
+    }
+
+    button {
+        width: 100%;
+        padding: 14px;
+    }
+
+    .modal-content {
+        width: 80%;
+        padding: 20px;
+    }
+
+    .modal-actions{
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 577) {
+    .input input {
+        width: 100%;
+    }
+
+
 }
