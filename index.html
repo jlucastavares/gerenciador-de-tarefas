@@ -29,13 +29,17 @@
         </div>
     </header>
     <div class="input">
-        <div class="div-input">
+        <div class="div-input task-input">
             <input placeholder="Digite a sua tarefa" type="text" id="input-task">
+        </div>
+
+        <div class="div-input">
             <select id="input-priority">
                 <option value="low">Baixa</option>
                 <option value="medium">Média</option>
                 <option value="high">Alta</option>
             </select>
+            <input type="date" class="input-date-add" id="input-deadline">
         </div>
         <div class="div-btn-add">
             <button class="add" aria-label="Adicionar Tarefa" title="Adicionar" id="add-button">+</button>
@@ -77,6 +81,10 @@
                 <option value="medium">Média</option>
                 <option value="high">Alta</option>
             </select>
+
+            <label for="modal-deadline" style="font-size: 14px; color: #666; display: block; margin-bottom: 5px;">Prazo
+                de Entrega:</label>
+            <input type="date" class="input-date-modal" id="modal-deadline">
 
             <div class="modal-actions">
                 <button id="modal-cancel" class="btn-secondary">Cancelar</button>

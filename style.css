@@ -158,6 +158,16 @@ body.dark-mode .btn-theme {
     position: relative;
 }
 
+.task-input {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 0px;
+    position: relative;
+}
+
 div.div-btn-add {
     display: flex;
     justify-content: center;
@@ -224,7 +234,76 @@ div.div-btn-add {
     box-shadow: 0 0 5px #f44336;
 }
 
+#input-deadline {
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    margin-right: 10px;
+}
 
+#input-deadline::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    filter: invert(0.5);
+}
+
+#input-deadline:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.08);
+}
+
+body.dark-mode #input-deadline:hover{
+    background-color: #16213e;
+    transform: scale(1.08);
+}
+
+#input-deadline:focus,
+#input-deadline.has-value {
+    width: 150px;
+    background-color: var(--column-bg);
+    color: var(--text-secondary);
+    border-radius: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#input-deadline:focus::-webkit-calendar-picker-indicator,
+#input-deadline.has-value::-webkit-calendar-picker-indicator {
+    position: static;
+    transform: none;
+    margin-left: auto;
+}
+
+body.dark-mode #input-deadline::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+body.dark-mode #input-deadline:focus,
+body.dark-mode #input-deadline.has-value {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.input-date-modal {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    color: #5e6c84;
+}
 
 .add {
     width: 50px;
@@ -326,6 +405,34 @@ div.div-btn-add {
 .task:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.task-deadline {
+    font-size: 12px;
+    color: #888;
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.task-deadline i {
+    font-size: 14px;
+}
+
+.task.overdue {
+    border: 1px solid #ff5c5c;
+    background-color: #fad4d4;
+}
+
+.task.overdue .task-deadline {
+    color: #ff5c5c;
+    font-weight: bold;
+}
+
+body.dark-mode .task.overdue {
+    background-color: #3e2a2a;
+    border-color: #ff5c5c;
 }
 
 #todo .task {
@@ -491,10 +598,10 @@ body.dark-mode .drag-over {
     margin-top: auto;
     padding: 30px 0;
     width: 100%;
-    border-top: 1px solid rgba(0,0,0,0.05);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
     color: var(--text-secondary);
     font-size: 0.9rem;
-    align-self: center; 
+    align-self: center;
 }
 
 body.dark-mode .app-footer {
@@ -632,7 +739,7 @@ body.dark-mode .app-footer {
         padding: 20px;
     }
 
-    .modal-actions{
+    .modal-actions {
         flex-direction: column;
     }
 
