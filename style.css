@@ -307,6 +307,15 @@ div.div-btn-add {
     align-items: center;
 }
 
+.task-container:empty::after {
+    content: "Não há tarefas nesta coluna.";
+    color: var(--text-secondary);
+    text-align: center;
+    font-family: Poppins, sans-serif;
+    margin-top: 20px;
+    display: block;
+}
+
 .task span {
     display: flex;
     align-items: center;
