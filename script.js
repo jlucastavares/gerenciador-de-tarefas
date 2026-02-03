@@ -19,7 +19,6 @@ const dateInputs = document.querySelectorAll('input[type="date"]');
 let draggedTask = null;
 let currentTaskTextElement = null;
 
-// VERSÃO ROBUSTA DO SAVETASKS (Use esta)
 function saveTasks() {
     const tasksData = {
          todo: [], 
