@@ -383,10 +383,10 @@ dateInputs.forEach(input => {
     input.addEventListener('change', checkValue);
     input.addEventListener('blur', checkValue);
     
-    checkValue(); 
 });
 
 // Carrega as tarefas salvas ao iniciar a página
 loadTasks();
 loadTheme();
+checkValue(); 
 ajustReponsive();
