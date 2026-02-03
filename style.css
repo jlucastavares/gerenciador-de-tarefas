@@ -168,6 +168,12 @@ body.dark-mode .btn-theme {
     position: relative;
 }
 
+.label-input-task {
+    font-size: 14px;
+    color: var(--text-secondary);  
+    display: none;
+}
+
 div.div-btn-add {
     display: flex;
     justify-content: center;
@@ -235,28 +241,33 @@ div.div-btn-add {
 }
 
 #input-deadline {
+    appearance: none;
+    -webkit-appearance: none;
     background: transparent;
     border: none;
     outline: none;
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    color: transparent;
+    margin-right: 10px;
     cursor: pointer;
+    color: transparent;
     transition: all 0.3s ease;
     position: relative;
-    margin-right: 10px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 256 256'%3E%3Cpath fill='%235e6c84' d='M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm0,176H48V80H208V208Zm0-144H48V48H72v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V64Z'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 24px;
 }
 
 #input-deadline::-webkit-calendar-picker-indicator {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 24px;
-    height: 24px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
     cursor: pointer;
-    filter: invert(0.5);
 }
 
 #input-deadline:hover {
@@ -277,17 +288,11 @@ body.dark-mode #input-deadline:hover{
     border-radius: 20px;
     padding-left: 10px;
     padding-right: 10px;
+    background-position: right 10px center;
 }
 
-#input-deadline:focus::-webkit-calendar-picker-indicator,
-#input-deadline.has-value::-webkit-calendar-picker-indicator {
-    position: static;
-    transform: none;
-    margin-left: auto;
-}
-
-body.dark-mode #input-deadline::-webkit-calendar-picker-indicator {
-    filter: invert(1);
+body.dark-mode #input-deadline {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 256 256'%3E%3Cpath fill='%23ffffff' d='M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm0,176H48V80H208V208Zm0-144H48V48H72v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V64Z'%3E%3C/path%3E%3C/svg%3E");
 }
 
 body.dark-mode #input-deadline:focus,
@@ -295,6 +300,8 @@ body.dark-mode #input-deadline.has-value {
     color: #fff;
     background-color: rgba(255, 255, 255, 0.1);
 }
+
+
 
 .input-date-modal {
     width: 100%;
@@ -684,6 +691,10 @@ body.dark-mode .app-footer {
 
     .input input {
         width: 70%;
+    }
+
+    .label-input-task{
+        display: block;
     }
 
     .input select {

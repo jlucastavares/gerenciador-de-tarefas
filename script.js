@@ -346,17 +346,6 @@ clearSearchBtn.addEventListener('click', function () {
     searchInput.focus();
 });
 
-function ajustLabel() {
-    const divLabel = document.querySelector('.div-input.task-input');
-    const larguraTela = window.innerWidth;
-
-    if (larguraTela <= 768) {
-        divLabel.innerHTML = '<label for="input-task" class="label-input-task">Digite o nome da sua nova Tarefa:</label> <input placeholder="Digite a sua tarefa" type="text" id="input-task">';
-    } else {
-        divLabel.innerHTML = '<input placeholder="Digite a sua tarefa" type="text" id="input-task">';
-    }
-}
-
 function ajustReponsive() {
     const botao = document.querySelector('.add');
     const larguraTela = window.innerWidth;
@@ -369,7 +358,6 @@ function ajustReponsive() {
 }
 
 window.addEventListener('resize', ajustReponsive);
-window.addEventListener('resize', ajustLabel);
 
 dateInputs.forEach(input => {
     const checkValue = () => {
@@ -379,7 +367,7 @@ dateInputs.forEach(input => {
             input.classList.remove('has-value');
         }
     };
-
+    checkValue();
     input.addEventListener('change', checkValue);
     input.addEventListener('blur', checkValue);
     
@@ -387,6 +375,5 @@ dateInputs.forEach(input => {
 
 // Carrega as tarefas salvas ao iniciar a página
 loadTasks();
-loadTheme();
-checkValue(); 
+loadTheme(); 
 ajustReponsive();
