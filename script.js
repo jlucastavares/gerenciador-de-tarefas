@@ -286,6 +286,7 @@ function addTask() {
     inputTask.focus();
     inputPriority.value = 'low';
     inputDeadline.value = '';
+    inputDeadline.classList.remove('has-value');
 }
 
 // Adiciona evento ao botão de adicionar
