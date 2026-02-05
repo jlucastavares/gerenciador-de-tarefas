@@ -170,7 +170,7 @@ body.dark-mode .btn-theme {
 
 .label-input-task {
     font-size: 14px;
-    color: var(--text-secondary);  
+    color: var(--text-secondary);
     display: none;
 }
 
@@ -275,7 +275,7 @@ div.div-btn-add {
     transform: scale(1.08);
 }
 
-body.dark-mode #input-deadline:hover{
+body.dark-mode #input-deadline:hover {
     background-color: #16213e;
     transform: scale(1.08);
 }
@@ -690,10 +690,10 @@ body.dark-mode .app-footer {
     }
 
     .input input {
-        width: 70%;
+        width: 95%;
     }
 
-    .label-input-task{
+    .label-input-task {
         display: block;
     }
 
@@ -710,12 +710,12 @@ body.dark-mode .app-footer {
         padding-bottom: 9px;
     }
 
-    .div-input{
+    .div-input {
         width: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 10px;
+        gap: 15px;
     }
 
     #input-priority {
@@ -725,8 +725,9 @@ body.dark-mode .app-footer {
         margin: 0;
     }
 
-    #inpute-deadline {
+    #input-deadline {
         margin-right: 0px;
+        height: 20px;
     }
 
     #input-deadline:focus,

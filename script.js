@@ -15,6 +15,7 @@ const themeIcon = themeToggleBtn.querySelector('i');
 const inputDeadline = document.getElementById('input-deadline');
 const modalDeadlineInput = document.getElementById('modal-deadline');
 const dateInputs = document.querySelectorAll('input[type="date"]');
+const btnGoogleCalendar = document.getElementById('btn-google-calendar');
 
 let draggedTask = null;
 let currentTaskTextElement = null;
@@ -285,7 +286,7 @@ function addTask() {
     inputTask.focus();
     inputPriority.value = 'low';
     inputDeadline.value = '';
-    inputDeadline.classList.remove('has-value');
+    inputDeadline.classList.remove('has-value');  
 }
 
 // Adiciona evento ao botão de adicionar
@@ -371,6 +372,25 @@ dateInputs.forEach(input => {
     input.addEventListener('change', checkValue);
     input.addEventListener('blur', checkValue);
     
+});
+
+btnGoogleCalendar.addEventListener('click', function () {
+    const taskText = modalInput.value.trim();
+    const deadline = modalDeadlineInput.value;
+
+    if (!deadline){
+        return
+    }
+
+    const startDateStr = deadline.replace(/-/g, '');
+    const dateObj = new Date(deadline);
+    dateObj.setDate(dateObj.getDate() + 1);
+    const endDateStr = dateObj.toISOString().slice(0, 10).replace(/-/g, '');
+
+    const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(taskText)}&dates=${startDateStr}/${endDateStr}&details=Lembrete+do+meu+Kanban`;
+
+    window.open(url, '_blank')
+
 });
 
 // Carrega as tarefas salvas ao iniciar a página
